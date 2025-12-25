@@ -60,10 +60,13 @@ python3 generic_player.py
 - **Space / Media keys** — Play/Pause  
 - **F11** — Fullscreen (Esc or F11 to exit)  
 - **Ctrl+L** — Toggle lyrics (if module present)
+- **Physical key on keyboard for play/pause** — Play/Pause   
+
 
 ### Notes
 - If a file won’t play, you likely need codecs (FFmpeg/libavcodec-extra for Qt6, or GStreamer plugins for Qt5).
 - Online lyrics use a public endpoint; Lyric success may vary.
+- Physical key on keyboard for play/pause_ May show wrong OSD status on Wayland compositors.
 
 ### License
 GPL v2 — JJ Posti (techtimejourney.net) 2025
