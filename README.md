@@ -66,7 +66,7 @@ python3 generic_player.py
 ### Notes
 - If a file won’t play, you likely need codecs (FFmpeg/libavcodec-extra for Qt6, or GStreamer plugins for Qt5).
 - Online lyrics use a public endpoint; Lyric success may vary.
-- Physical key on keyboard for play/pause_ May show wrong OSD status on Wayland compositors.
+- Physical key on keyboard for Play/Pause: Might show wrong OSD status on Wayland compositors.
 
 ### License
 GPL v2 — JJ Posti (techtimejourney.net) 2025
