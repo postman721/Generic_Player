@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This metadata file is released under CC0-1.0. -->
+<component type="desktop-application">
+  <id>net.techtimejourney.GenericPlayer</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0-only</project_license>
+  <name>Generic Player</name>
+  <summary>Play music and videos with an audio visualizer</summary>
+  <description>
+    <p>Generic Player is a desktop music and video player with a searchable
+    queue, album artwork, playback controls and configurable color themes.</p>
+    <p>Organize local files and HTTP or HTTPS media streams, import and export
+    playlists, and resume your listening session. Spectrum and waveform views
+    use decoded audio when the installed Qt Multimedia backend supports it.</p>
+    <p>MPRIS desktop media controls support playerctl and compatible tools.
+    Optional song notifications show artist, title and known year. Automatic
+    discovery supports existing GNOME, KDE and compatible desktop notification
+    services and verified Wayland_OSD installations. Custom command adapters
+    can be configured without making any OSD package a playback dependency.</p>
+  </description>
+  <launchable type="desktop-id">generic-player.desktop</launchable>
+  <url type="homepage">https://github.com/postman721/Generic_Player</url>
+  <url type="bugtracker">https://github.com/postman721/Generic_Player/issues</url>
+  <url type="vcs-browser">https://github.com/postman721/Generic_Player</url>
+  <developer id="net.techtimejourney">
+    <name>JJ Posti</name>
+  </developer>
+  <provides>
+    <binary>generic-player</binary>
+  </provides>
+  <releases>
+    <release version="1.3.1" date="2026-11-01">
+      <description>
+        <p>Restore reliable P and Space playback shortcuts across player
+        controls and fullscreen. Preserve text editing and menu navigation,
+        accept separate rapid playback gestures, and retain optional OSD
+        discovery and desktop media controls.</p>
+      </description>
+    </release>
+    <release version="1.3.0" date="2026-11-01">
+      <description>
+        <p>Automatically discover compatible Wayland OSD aliases and running
+        desktop notification services, including GNOME and KDE. Add explicit
+        custom command adapters, preserve saved notification preferences,
+        and keep optional integration resources bounded.</p>
+      </description>
+    </release>
+    <release version="1.2.1" date="2026-10-31">
+      <description>
+        <p>Discover optional OSD installations at /usr/bin/osd and other
+        supported locations, recover failed deliveries with an explicit retry,
+        and bound asynchronous startup and notification resources.</p>
+      </description>
+    </release>
+    <release version="1.2.0" date="2026-10-31">
+      <description>
+        <p>Add native QtDBus media controls, preserved year and date metadata,
+        and optional song notifications. Improve transport state handling and
+        keep desktop notification services independent of installation.</p>
+      </description>
+    </release>
+    <release version="1.1.0" date="2026-10-31">
+      <description>
+        <p>Add audio visualization, an improved queue and listening view,
+        reliable playback controls, source installation and desktop data.</p>
+      </description>
+    </release>
+  </releases>
+</component>

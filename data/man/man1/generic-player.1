@@ -1,0 +1,335 @@
+.TH GENERIC-PLAYER 1 "2026-11-01" "Generic Player 1.3.1" "User Commands"
+.SH NAME
+generic-player \- play music and videos with an audio visualizer
+.SH SYNOPSIS
+.B generic-player
+.RI [ OPTION ]
+.RI [ SOURCE ...]
+.br
+.B generic-player \-\-
+.RI [ SOURCE ...]
+.SH DESCRIPTION
+.B Generic Player
+is a graphical music and video player for Linux desktops. It provides a
+searchable queue, album artwork, shuffle, repeat, seeking, playback speed,
+a sleep timer and optional lyrics and desktop media controls.
+.PP
+Each
+.I SOURCE
+may be a media filename, directory, JSON/M3U/M3U8 playlist, local
+.B file:
+URL, or direct HTTP/HTTPS media stream URL. Quote paths containing spaces.
+Local file URLs must refer to an absolute path on this computer. Directories
+are scanned for supported media files; nested directory symlinks are not followed.
+.PP
+Sources are added to the restored queue. Starting the application or opening
+files does not start playback automatically; select a track and press Play.
+An ordinary web page is not necessarily a playable media stream.
+.PP
+Spectrum and waveform views use decoded audio. Qt 6.8 or newer with the
+FFmpeg backend supports audio-buffer visualization; Qt5 requires backend
+audio-probe support. Playback remains available when visualization is
+unsupported. Actual media formats depend on the installed codecs.
+.SH OPTIONS
+.TP
+.BR \-h ", " \-\-help
+Show command-line help and exit.
+.TP
+.B \-\-version
+Print the application version and exit.
+.TP
+.B \-\-
+End option processing. Use this before filenames beginning with a hyphen.
+.SH EXAMPLES
+Open the player:
+.PP
+.nf
+generic-player
+.fi
+.PP
+Add a local album and a playlist:
+.PP
+.nf
+generic-player "$HOME/Music/Favorite Album" "$HOME/Music/mix.m3u8"
+.fi
+.PP
+Add a local file URL:
+.PP
+.nf
+generic-player "file:///home/alex/Music/Track%20One.flac"
+.fi
+.PP
+Add a filename beginning with a hyphen:
+.PP
+.nf
+generic-player \-\- \-track.mp3
+.fi
+.SH KEYBOARD CONTROLS
+.TP
+.B P / Space / Alt+P
+Play or pause. P and Space remain playback controls when a player button,
+closed noneditable selector, or read-only lyrics view has focus.
+.TP
+.B Ctrl+Left / Ctrl+Right
+Previous or next track.
+.TP
+.B Left / Right
+Seek backward or forward five seconds.
+.TP
+.B M / S / R
+Mute, toggle shuffle, or cycle repeat mode.
+.TP
+.B Ctrl+F
+Focus queue search.
+.TP
+.B Escape in queue search
+Clear the filter and return focus to the queue.
+.TP
+.B Enter on a focused button
+Activate that button.
+.TP
+.B F11 / Escape
+Enter fullscreen or return to the previous window state.
+.TP
+.B F1
+Show all keyboard shortcuts.
+.PP
+Typing controls, editable selectors, dialogs, and open menus keep their normal
+keys. Arrow keys retain their normal selector, slider, and text-navigation
+behavior. Dedicated media keys can control playback while typing.
+Fullscreen focuses the media view and restores the previous control on return.
+.SH DESKTOP MEDIA CONTROLS
+Generic Player publishes MPRIS through QtDBus on the desktop session bus.
+The primary service name is
+.BR org.mpris.MediaPlayer2.Generic_Player .
+Additional instances append
+.BR .instance<PID> .
+The optional
+.B playerctl
+client can query metadata and control playback:
+.PP
+.nf
+playerctl \-\-list\-all
+playerctl \-\-player=Generic_Player play
+playerctl \-\-player=Generic_Player pause
+playerctl \-\-player=Generic_Player play\-pause
+playerctl \-\-player=Generic_Player stop
+playerctl \-\-player=Generic_Player next
+playerctl \-\-player=Generic_Player previous
+playerctl \-\-player=Generic_Player position 5+
+playerctl \-\-player=Generic_Player volume 0.7
+playerctl \-\-player=Generic_Player loop Playlist
+playerctl \-\-player=Generic_Player shuffle On
+playerctl \-\-player=Generic_Player metadata artist title
+playerctl \-\-player=Generic_Player metadata generic\-player:year
+.fi
+.PP
+Next and previous preserve paused or stopped playback when sent through MPRIS.
+The tagged date is exposed as
+.BR xesam:contentCreated ,
+preserving its known precision. Unknown dates and years are omitted.
+.SH OPTIONAL SONG NOTIFICATIONS
+Choose
+.B View > Song notifications
+to select Automatic, Off, Desktop notifications (GNOME / KDE), Wayland OSD,
+or Custom command. Automatic is the default for new preferences; existing
+saved choices, including Off, are preserved. Artist, song and known year
+are shown when the song changes; play, pause and stop update the status.
+.PP
+Automatic prioritizes an explicit GENERIC_PLAYER_OSD_ARGV adapter, then an
+explicit GENERIC_PLAYER_OSD_SOCKET or GENERIC_PLAYER_OSD_COMMAND override.
+Without overrides, it tries a running compatible Wayland socket, an active
+desktop notification service, and then a verified installed Wayland client.
+Invalid explicit overrides are reported without silently switching services.
+.PP
+Desktop notifications use an already-running
+.B org.freedesktop.Notifications
+service. This supports GNOME Shell, KDE Plasma, dunst, swaync and other
+implementations of that protocol, without guessing from the desktop name.
+They request a 5000 millisecond display; the service controls the actual
+duration, appearance and Do Not Disturb policy. GNOME and KDE's private
+volume or brightness overlays have separate access and timing restrictions;
+song cards use their public desktop notification interface instead.
+.PP
+Wayland_OSD discovery checks compatible user-owned sockets in XDG_RUNTIME_DIR,
+/run/user/<uid>, and /tmp/wayland-volume-osd-<uid>. Renaming the upstream
+executable does not change its socket name, wayland-volume-osd.sock.
+Client discovery checks
+.BR osd ,
+.BR wayland-osd ,
+.BR wayland_osd ,
+and
+.B wayland-volume-osd
+in /usr/bin, /usr/local/bin and PATH. The command's help must identify the
+supported CLI before the normal media client starts or reuses its shared
+daemon. Incompatible candidates are skipped. An initial artist/title card
+may appear briefly before the complete song card replaces it.
+No OSD package is installed and no configuration is changed.
+.PP
+A newly started compatible daemon receives a 5000 millisecond timeout.
+For an already-running daemon, run
+.B /usr/bin/osd setup
+(or
+use the actual executable name, such as
+.BR "wayland-osd setup" )
+and set
+.B Hide timeout (ms)
+to
+.BR 5000 .
+This setting applies to every card from that daemon, including volume cards.
+There is no per-card timeout override in the current upstream protocol.
+.PP
+Custom command uses the explicit GENERIC_PLAYER_OSD_ARGV adapter described
+below. An arbitrary command's arguments cannot be inferred from its name.
+A custom service that implements the public notification protocol is found
+automatically; a compatible JSON socket can be configured explicitly.
+.PP
+After fixing an installation or starting its service, choose
+.B View > Song notifications > Retry current song notification
+or reselect the active mode. This retries the current song without requiring
+a track change. Turning notifications Off cancels pending delivery work;
+the shared OSD daemon may remain available to other applications.
+.PP
+Bind media keys directly to the playerctl commands above to avoid the OSD's
+own media wrappers replacing the complete card with artist/title-only text.
+An OSD is never required for installation, local playback, or MPRIS control.
+Other MPRIS listeners can consume metadata and state signals independently.
+.SH FILES
+.TP
+.I /opt/generic-player
+Installed application code. The command launcher uses this location
+independently of the current working directory.
+.TP
+.I /usr/local/bin/generic-player
+Default launcher installed by
+.BR "make install" .
+The Debian package uses
+.I /usr/bin/generic-player
+instead.
+.TP
+.I /usr/local/share
+Default prefix for the desktop entry, hicolor icon, man page and AppStream
+metadata installed from source. The Debian package uses
+.IR /usr/share .
+.TP
+.I $XDG_CONFIG_HOME/generic_player/session.json
+Saved queue, playback position and preferences.
+.TP
+.I $XDG_CONFIG_HOME/generic_player/theme.json
+Saved color theme. If
+.B XDG_CONFIG_HOME
+is unset, the configuration base directory is
+.IR ~/.config .
+.SH ENVIRONMENT
+.TP
+.B GENERIC_PLAYER_QT_API
+Set to
+.B 5
+or
+.B 6
+to select the Qt binding explicitly. If unset, the player selects an
+available supported binding.
+.TP
+.B GENERIC_PLAYER_OSD_COMMAND
+One absolute path to a compatible Wayland_OSD client, such as /usr/bin/osd.
+The value is not a shell command and must not include arguments. Quote paths
+containing spaces. An invalid explicit override does not fall back to another
+service. Automatic and Wayland OSD use this override when no compatible
+socket can be reached, unless a higher-priority explicit adapter is selected.
+.TP
+.B GENERIC_PLAYER_OSD_SOCKET
+One absolute path to a user-owned Unix socket implementing the Wayland_OSD
+newline-delimited JSON protocol. Automatic and Wayland OSD select only that
+socket unless a higher-priority explicit argument adapter is selected.
+The custom daemon must already be running; automatic client startup is
+disabled for this override. An already-reachable socket needs no executable.
+.TP
+.B GENERIC_PLAYER_OSD_ARGV
+A JSON array of 1 to 32 strings, each at most 4096 characters, with at most
+32768 characters of configuration.
+The first item is a literal executable name on PATH or an absolute executable
+path. Each remaining item is one argument; paths with spaces stay one item.
+Automatic and Custom command use this adapter. Custom command requires it.
+Arguments may contain
+.BR {artist} ,
+.BR {title} ,
+.BR {album} ,
+.BR {year} ,
+.BR {status} ,
+.B {text}
+(artist, title and known year), and
+.B {timeout_ms}
+(5000). Missing artist, album and year fields are empty. Use double braces,
+{{ and }}, for literal braces. Unsupported fields, format specifications
+and conversions are rejected.
+Shell expansion, pipes, redirection and command substitution are not evaluated.
+The selected tool controls display duration; choose a command that sends a card
+and exits within three seconds. The player stops commands that exceed that
+deadline.
+.PP
+For example, with notify-send already installed:
+.PP
+.nf
+GENERIC_PLAYER_OSD_ARGV='["notify-send","-t","{timeout_ms}",
+"--","{status}","{text}"]' generic-player
+.fi
+.PP
+The built-in desktop notification integration does not require notify-send.
+Explicitly empty or malformed OSD overrides are errors; unset an override to
+restore automatic discovery. OSD configuration errors do not block playback.
+.TP
+.B XDG_RUNTIME_DIR
+Preferred runtime directory for the Wayland_OSD socket. Relative or malformed
+paths are ignored; normal discovery also checks /run/user/<uid> and the
+legacy /tmp/wayland-volume-osd-<uid> directory.
+.TP
+.B XDG_CONFIG_HOME
+Configuration base directory. Installation and uninstallation do not remove
+the user's saved queue or preferences.
+.SH SOURCE INSTALLATION
+Manual installation supports Debian/Ubuntu, Arch Linux and conventional Fedora
+using the distribution's runtime dependencies listed in README.md.
+The install and uninstall helpers use Python's standard library and do not
+invoke a package manager.
+.PP
+From a source checkout or an extracted release, install the system dependencies documented
+in README.md, then run:
+.PP
+.nf
+make check
+sudo make install
+.fi
+.PP
+The dependency check works in a checkout or an extracted source release.
+Its optional OSD checks inspect files and configuration only; they do not
+launch OSD commands, contact services, or require a running session bus.
+.PP
+Run
+.B sudo make uninstall
+from the source checkout to remove a manual installation. The installer
+tracks owned files and preserves unrelated or locally modified files.
+Use the same installation variables used at install time. A
+.B DESTDIR
+value stages installation into another root for inspection.
+.PP
+Build a Debian package as a normal user with
+.BR "make deb" .
+Use the system package manager to install or remove that package; manual
+uninstallation does not remove a package-managed installation.
+.SH EXIT STATUS
+Help and version commands exit with status 0. Invalid command-line options
+or unsupported URL syntax exit with status 2. A normal graphical session
+returns the Qt application exit status.
+.SH SEE ALSO
+.BR make (1),
+.BR python3 (1),
+.BR playerctl (1)
+.PP
+Project source and documentation:
+.UR https://github.com/postman721/Generic_Player
+https://github.com/postman721/Generic_Player
+.UE
+.SH AUTHOR
+JJ Posti.
+.SH LICENSE
+GNU General Public License version 2. See the source LICENSE file.

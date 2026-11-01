@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Generic Player
+GenericName=Music and Video Player
+Comment=Listen to music, watch videos and visualize audio
+Exec=generic-player -- %U
+TryExec=generic-player
+Icon=generic-player
+Terminal=false
+Categories=AudioVideo;Player;Audio;Video;
+Keywords=Music;Sound;Movie;Playlist;Visualizer;Radio;
+MimeType=audio/mpeg;audio/flac;audio/x-flac;audio/ogg;audio/x-wav;audio/x-aiff;audio/mp4;audio/aac;application/ogg;video/mp4;video/mpeg;video/webm;video/x-matroska;video/x-msvideo;video/quicktime;audio/x-mpegurl;application/x-mpegurl;application/vnd.apple.mpegurl;
