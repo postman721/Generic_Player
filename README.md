@@ -1,6 +1,6 @@
 # Generic Player
 
-**Generic Player 1.3.0** is a music and video player for Linux, built with PyQt6 and optional PyQt5 support. PyQt5 is best-effort status.
+**Generic Player 1.3.1** is a music and video player for Linux, built with PyQt6 and optional PyQt5 support. PyQt5 is best-effort status.
 
 - Play local files(audio or video), folders, playlists, and internet radio.
 - Search and reorder your queue; use shuffle, repeat, playback speed, and a sleep timer.
